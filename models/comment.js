@@ -1,7 +1,7 @@
 'user strict';
 var { Promise } = require('bluebird');
 
-var sql = require('../helpers/db.js/index.js');
+var sql = require('../helpers/db');
 
 //Comment object constructor
 class Comment {

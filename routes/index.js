@@ -1,6 +1,6 @@
 const validate = require('express-validation');
 
-const { createComment, getMovieComments } = require('../validations/comment');
+const { createComment, getMovieComments, getMovieCharacters } = require('../validations/comment');
 
 const movieCtrl = require('../controllers/movie');
 const commentCtrl = require('../controllers/comment');
@@ -45,7 +45,7 @@ module.exports = (router) => {
    *
    * @apiError (Bad Request 400)   ValidationError  Some parameters may contain invalid values
    */
-  router.post('/movies/:movieId/comments', validate(createComment), commentCtrl.create);
+  router.post('/movies/:movieId/comments', validate(createComment), commentCtrl.createMovieComment);
 
   /**
    * @api {get} /movies/:movieId/comments List Movie Comments

@@ -36,5 +36,10 @@ module.exports = {
           params: {
               movieId: Joi.number().required(),
           }
-      }
+      },
+      getMovieCharacters: {
+        params: {
+          movieId: Joi.number().required(),
+        }
+      },
 };

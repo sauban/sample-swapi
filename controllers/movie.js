@@ -5,7 +5,7 @@ const _ = require('lodash');
 
 const Comment = require('../models/comment');
 const { getMovieList, getMovieById } = require('../helpers/swapi');
-const { getQueryKey, getQueryValue, getMeta } = require('../config/util');
+const { getQueryKey, getQueryValue, getMeta } = require('../helpers/util');
 
 exports.listMovies = async (req, res) => {
     const fetchedMovies = await getMovieList();
@@ -47,6 +47,11 @@ exports.listMovieComments = async (req, res) => {
         .where('movieId', movieId)
         .orderBy('created_at', 'desc');
     res.json(comments);
+}
+
+exports.listMovieCharacters = async (req, res) => {
+    const { movieId } = req.params;
+    res.json(movieId);
 }
 
 exports.listCharacters = async (req, res) => {

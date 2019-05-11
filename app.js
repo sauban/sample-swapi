@@ -16,8 +16,6 @@ app.use(router);
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use('/', appRouter);
-
 app.use('/docs', express.static(path.join(__dirname, 'docs')));
 
 // Register our REST API.
