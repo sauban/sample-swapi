@@ -1,6 +1,7 @@
 {
   "name": "sample-swapi",
   "version": "0.0.0",
+  "description": "A sample starwars api",
   "scripts": {
     "start": "node ./bin/www",
     "docs": "apidoc -i routes -o docs"
@@ -9,6 +10,10 @@
     "name": "Lawal Sauban",
     "email": "saubanlawal@gmail.com"
   },
+  "repository": {
+    "url": "https://github.com/sauban/sample-swapi.git"
+  },
+  "license": "ISC",
   "dependencies": {
     "apidoc": "^0.17.7",
     "axios": "^0.18.0",
@@ -25,5 +30,10 @@
     "morgan": "~1.9.0",
     "mysql": "^2.17.1",
     "node-cache": "^4.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.14.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0"
   }
 }
