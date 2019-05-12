@@ -1,5 +1,8 @@
 const { get } = require('axios');
+const httpStatus = require('http-status');
 const _ = require('lodash');
+
+const APIError = require('./apierror');
 
 const fetchRecord = async (url, oldRecord=[]) => {
     try {
@@ -18,14 +21,6 @@ const fetchRecord = async (url, oldRecord=[]) => {
 };
 
 exports.fetchRecord = fetchRecord;
-
-exports.getQueryValue = (query, delimiter=':') => {
-    return query && query.split(delimiter)[1];
-}
-
-exports.getQueryKey = (query, delimiter=':') => {
-    return query && query.split(delimiter)[0];
-}
 
 const toFeet = (num) => {
     if (isNaN(num)) {
@@ -57,3 +52,20 @@ exports.getMeta = (results) => ({
         }, { cm: 0 })
     });
 
+exports.validateQUery = (allowedKeys, queryObj) => {
+    return Object.keys(queryObj).reduce((acc, curr) => {
+        if (!_.includes(allowedKeys, curr)) {
+            return new APIError({
+                status: httpStatus.BAD_REQUEST,
+                message: 'Validation Error',
+                errors: [
+                    {
+                        location: 'query',
+                        message: `Invalid '${curr}' query key, it must be one of [${allowedKeys}]`
+                    }
+                ]
+            });
+        }
+        return acc;
+    }, null);
+}

@@ -12,6 +12,11 @@ module.exports = {
         }
       },
       getMovieCharacters: {
+          query: Joi.object().keys({
+            sortDirection: Joi.string().valid('desc', 'DESC', 'ASC', 'asc'),
+            sortBy: Joi.string().valid('name', 'gender', 'height'),
+            gender: Joi.string().valid('female', 'male', 'unknown')
+          }).required().strict(),
         params: {
           movieId: Joi.number().required(),
         }

@@ -8,7 +8,7 @@ class Comment {
     constructor(comment) {
         this.comment = comment.comment;
         this.movie_id = comment.movie_id;
-        this.commenter = comment.commenter;
+        this.commenter_ip = comment.commenter_ip;
         this.updated_at = new Date();
     }
     static createComment(newComment) {

@@ -5,7 +5,7 @@ const _ = require('lodash');
 
 const Comment = require('../models/comment');
 const { getMovieList, getMovieById } = require('../helpers/swapi');
-const { getQueryKey, getQueryValue, getMeta } = require('../helpers/util');
+const { getMeta, validateQUery } = require('../helpers/util');
 
 exports.listMovies = async (req, res, next) => {
     const fetchedMovies = await getMovieList();
@@ -36,19 +36,22 @@ exports.loadMovie = async (req, res, next) => {
 };
 
 exports.listMovieCharacters = async (req, res) => {
+    const error = validateQUery(['sortBy', 'sortDirection', 'gender'], req.query)
+    if (error) {
+        throw error;
+    }
     const movie = req.movie;
     const characters = movie.characters;
-    const { sort, filter } = req.query;
-    const sortKey = getQueryKey(sort) || 'name';
-    const sortValue = getQueryValue(sort) || 'ASC';
-    const filterKey = getQueryKey(filter);
-    const filterValue = getQueryValue(filter);
+    const { sortBy, sortDirection, gender } = req.query;
+
+    const sortKey = sortBy || 'name';
+    const sortValue = sortDirection || 'ASC';
     let filteredCharacters;
 
     const sortedCharacters = _.orderBy(characters, [sortKey], [sortValue]);
     
-    if (filterKey) {
-        filteredCharacters = _.filter(sortedCharacters, character => character[filterKey] === filterValue);
+    if (gender) {
+        filteredCharacters = _.filter(sortedCharacters, character => character.gender === gender);
     }
 
     const results = filteredCharacters || sortedCharacters;
