@@ -38,12 +38,12 @@ exports.converter = (err, req, res, next) => {
       status: err.status,
       stack: err.stack,
     });
-  } else if (err.response && err.response.status){
-      convertedError = new APIError({
-        message: err.message,
-        status: err.response.status,
-        stack: err.stack
-      })
+  } else if (err.response && err.response.status) {
+    convertedError = new APIError({
+      message: err.message,
+      status: err.response.status,
+      stack: err.stack,
+    });
   } else if (!(err instanceof APIError)) {
     convertedError = new APIError({
       message: err.message,

@@ -8,7 +8,7 @@ const commentCtrl = require('../controllers/comment');
 
 module.exports = (router) => {
   /* GET home page. */
-  router.get('/', function(req, res) {
+  router.get('/', (req, res) => {
     res.send({ title: 'Sample Swapi', status: 'Ok', docs: '/docs' });
   });
 

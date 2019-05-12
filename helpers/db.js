@@ -2,28 +2,30 @@ require('dotenv').config();
 
 const mysql = require('mysql');
 
-const { databaseUrl } =  require('./config');
-//local mysql db connection
+const { databaseUrl } = require('./config');
+// local mysql db connection
 
 class MysqlConnect {
-    constructor(){
-        this.connection = mysql.createConnection(databaseUrl);
+  constructor() {
+    this.connection = mysql.createConnection(databaseUrl);
+  }
+
+  connect() {
+    return new Promise((resolve, reject) => {
+      this.connection.connect((err) => {
+        if (err) reject(err);
+        resolve(this.connection);
+      });
+    });
+  }
+
+  close() {
+    if (this.connection) {
+      this.connection.end((err) => {
+        if (err) throw err;
+      });
     }
-    connect() {
-        return new Promise((resolve, reject) => {
-            this.connection.connect((err) => {
-                if (err) reject(err);
-                resolve(this.connection);
-            });
-        })
-    }
-    close() {
-        if (this.connection) {
-            this.connection.end((err) => {
-                if (err) throw err;
-            });
-        }
-    }
+  }
 }
 
 module.exports = MysqlConnect;
