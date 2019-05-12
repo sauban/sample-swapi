@@ -65,8 +65,9 @@ module.exports = (router) => {
    * @apiGroup Comment
    * @apiPermission public
    *
-   * @apiParam  {String{asc|desc}}   [sort=name:desc|gender:desc|height:asc]     Sortby properties
-   * @apiParam  {String{1..10}}      [filter=gender:male|female|unknown|none|n\a]  Filter by gender
+   * @apiParam  {String{asc|desc}}   [sortBy=name|gender|height]     Sortby properties
+   * @apiParam  {String{1..10}}      [sortDirection=asc|desc]  Sort direction
+   * @apiParam  {String{1..10}}      [gender=female|male|unknown]  Filter by gender
    *
    * @apiSuccess {Object} response response object.
    * @apiSuccess {Object[]} response.results List of characters.
