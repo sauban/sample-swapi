@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 const logger = require('morgan');
 const promiseRouter = require('express-promise-router');
 
@@ -12,9 +12,10 @@ const router = promiseRouter();
 
 app.use(logger('dev'));
 app.use(express.json());
+// parse body params and attach them to req.body
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(router);
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 
 app.use('/docs', express.static(path.join(__dirname, 'docs')));
 

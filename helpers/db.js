@@ -4,11 +4,26 @@ const mysql = require('mysql');
 
 const { databaseUrl } =  require('./config');
 //local mysql db connection
-const connection = mysql.createConnection(databaseUrl);
 
-connection.connect((err) => {
-    if (err) throw err;
-    console.log('Connection to db successful');
-});
+class MysqlConnect {
+    constructor(){
+        this.connection = mysql.createConnection(databaseUrl);
+    }
+    connect() {
+        return new Promise((resolve, reject) => {
+            this.connection.connect((err) => {
+                if (err) reject(err);
+                resolve(this.connection);
+            });
+        })
+    }
+    close() {
+        if (this.connection) {
+            this.connection.end((err) => {
+                if (err) throw err;
+            });
+        }
+    }
+}
 
-module.exports = connection;
+module.exports = MysqlConnect;

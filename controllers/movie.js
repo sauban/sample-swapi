@@ -7,67 +7,51 @@ const Comment = require('../models/comment');
 const { getMovieList, getMovieById } = require('../helpers/swapi');
 const { getQueryKey, getQueryValue, getMeta } = require('../helpers/util');
 
-exports.listMovies = async (req, res) => {
+exports.listMovies = async (req, res, next) => {
     const fetchedMovies = await getMovieList();
     const sortMovies = _.sortBy(fetchedMovies, movie => moment(movie.release_date));
-    const movies = await bluebird.map(sortMovies, async movie => {
-        movie.comment_counts = await Comment.getMovieCommentCount(movie);
+    const movies = await bluebird.map(sortMovies, async (movie) => {
+        const counts = await Comment.getMovieCommentCount(movie.id);
+        movie.comment_counts = _.head(_.at(counts, '[0].count'));
         return movie;
-    });
+    }).catch(next);
     res.send(movies);
 };
 
 exports.loadMovie = async (req, res, next) => {
-    const { movieId } = req.params;
-    const movie = await getMovieById(movieId);
-    if (!movie) {
-        throw { message: 'Movie not found', status: httpStatus.NOT_FOUND };
-    }
-    req.movie = movie;
-    return next();
+   try {
+        const { movieId } = req.params;
+        const movie = await getMovieById(movieId);
+        if (!movie) {
+            return next({ message: 'Movie not found', status: httpStatus.NOT_FOUND });
+        }
+        req.movie = movie;
+        return next();
+   } catch (error) {
+       if (error.response && error.message) {
+           error.message = 'Movie not found';
+       }
+        return next(error);
+   }
 };
-
-exports.addComment = async (req, res, next) => {
-    const { movieId } = req.params;
-    const commenter_ip = req.headers['x-forwarded-for'] || req.ip;
-    const data = Object.assign({}, req.body, { commenter_ip, movieId });
-    const comment = await Comment.query().insert(data);
-    return res.json(comment);
-};
-
-exports.listComments = async (req, res) => {
-    const comments = await Comment.query()
-        .orderBy('created_at', 'desc');
-    res.json(comments);
-}
-
-exports.listMovieComments = async (req, res) => {
-    const { movieId } = req.params;
-    const comments = await Comment.query()
-        .where('movieId', movieId)
-        .orderBy('created_at', 'desc');
-    res.json(comments);
-}
 
 exports.listMovieCharacters = async (req, res) => {
-    const { movieId } = req.params;
-    res.json(movieId);
-}
-
-exports.listCharacters = async (req, res) => {
-    const characters = await getCharacters();
-    const { sortBy, gender } = req.query;
-    const sortKey = getQueryKey(sortBy) || 'name';
-    const sortValue = getQueryValue(sortBy) || 'ASC';
+    const movie = req.movie;
+    const characters = movie.characters;
+    const { sort, filter } = req.query;
+    const sortKey = getQueryKey(sort) || 'name';
+    const sortValue = getQueryValue(sort) || 'ASC';
+    const filterKey = getQueryKey(filter);
+    const filterValue = getQueryValue(filter);
     let filteredCharacters;
 
-    const sortedCharacters = _.orderBy(characters, [sortKey, sortValue]);
+    const sortedCharacters = _.orderBy(characters, [sortKey], [sortValue]);
     
-    if (gender) {
-        filteredCharacters = _.filter(sortedCharacters, character => character.gender === gender);
+    if (filterKey) {
+        filteredCharacters = _.filter(sortedCharacters, character => character[filterKey] === filterValue);
     }
 
     const results = filteredCharacters || sortedCharacters;
     const meta = getMeta(results);
-    return res.json({ results, meta });
+    return res.json({ results, meta }); 
 };

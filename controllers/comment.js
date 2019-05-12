@@ -1,18 +1,20 @@
-'use strict';
-
+const httpStatus = require('http-status');
 const Comment = require('../models/comment');
 
 exports.listAllMovieComments = async (req, res) => {
     const { movieId } = req.params;
-    const comments = await Comment.getAllComment({ movieId });
+    const comments = await Comment.getAllComment(movieId);
     return res.json(comments);
 };
 
 
 exports.createMovieComment = async (req, res) => {
-    const newComment = new Comment(req.body);
-    const createdComment = await Comment.createComment(newComment);
-    return res.json(createdComment);
+    const data = req.body;
+    data.commenter = req.headers['x-forwarded-for'] || req.ip;
+    data.movie_id = req.movie.id;
+    const newComment = new Comment(data);
+    const createdCommentId = await Comment.createComment(newComment);
+    return res.status(httpStatus.CREATED).json({ message: `created with id ${createdCommentId}`});
 };
 
 

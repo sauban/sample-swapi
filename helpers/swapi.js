@@ -1,8 +1,8 @@
-const { mapSeries } = require('bluebird');
+const { map } = require('bluebird');
 const _ = require('lodash');
 
 const Cache = require('./cache');
-const { fetchRecord } = require('./util');
+const { fetchRecord, toFeet, convertToNum } = require('./util');
 
 const BASE_URL = 'https://swapi.co/api';
 const ttl = 60 * 60 * 2;
@@ -11,22 +11,27 @@ const characterCache = new Cache(ttl);
 
 const _getMovieList = async (url) => {
     const movies = await fetchRecord(url);
-    const record = movies.map(movie => ({
-        ...{ id: movie.episode_id, name: movie.title },
-        ...(_.pick(['opening_crawl', 'release_date']))
-    }));
-    return record;
+    const records = movies.map(movie => Object.assign({},
+        { id: movie.episode_id, name: movie.title },
+        _.pick(movie, ['opening_crawl', 'release_date']),
+    ));
+    return records;
 };
 
 const _getCharacter = async (url) => {
     const character = await fetchRecord(url);
-    return character;
+    const record = Object.assign(_.pick(character, ['name', 'gender', 'url']), { heightInFeet: toFeet(convertToNum(character.height)), height: convertToNum(character.height) });
+    return record;
 };
 
 const _getMovieById = async (url) => {
+    const id = url.split('/').pop();
     const movie = await fetchRecord(url);
-    const record = { ...{ name: movie.title, id: episode_id }, ...(_.pick(movie, ['opening_crawl', 'release_date']))}
-    record.characters = mapSeries(movie.characters, async (characterUrl) => {
+    const record = Object.assign({},
+        { id, name: movie.title },
+        _.pick(movie, ['opening_crawl', 'release_date']),
+    );
+    record.characters = await map(movie.characters, async (characterUrl) => {
         const character = await characterCache.get(characterUrl, () => _getCharacter(characterUrl));
         return character;
     });

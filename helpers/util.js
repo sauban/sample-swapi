@@ -1,3 +1,4 @@
+const { get } = require('axios');
 const _ = require('lodash');
 
 const fetchRecord = async (url, oldRecord=[]) => {
@@ -26,7 +27,7 @@ exports.getQueryKey = (query, delimiter=':') => {
     return query && query.split(delimiter)[0];
 }
 
-exports.toFeet = (num) => {
+const toFeet = (num) => {
     if (isNaN(num)) {
         return null;
     }
@@ -36,22 +37,23 @@ exports.toFeet = (num) => {
     return `${feet}ft and ${inches} inches`;
   };
 
+exports.toFeet = toFeet;
+
+const convertToNum = (str) => {
+    if (isNaN(str)){
+        return 0;
+    }
+
+    return Number(str);
+};
+exports.convertToNum = convertToNum;
+
 exports.getMeta = (results) => ({
         total: results.length,
         totalHeight: results.reduce((acc, curr) => {
-            if (isNaN(curr.height)) {
-                return acc;
-            }
-            acc.cm += parseFloat(curr.height);
+            acc.cm += convertToNum(curr.height);
             acc.inch = toFeet(acc.cm);
             return acc;
         }, { cm: 0 })
     });
 
-exports.convertToNum = (str) => {
-    if (isNaN(str)){
-        return 0;
-    }
-
-    return parseFloat(str);
-};
