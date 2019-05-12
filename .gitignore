@@ -6,6 +6,9 @@ yarn.lock
 .tmp/
 builds/
 
+#compiled documentation directory
+docs
+
 # Logs
 logs
 *.log
