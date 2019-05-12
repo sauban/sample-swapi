@@ -36,7 +36,7 @@ exports.loadMovie = async (req, res, next) => {
 };
 
 exports.listMovieCharacters = async (req, res) => {
-    const error = validateQUery(['sortBy', 'sortDirection', 'gender'], req.query)
+    const error = validateQUery(['sortBy', 'sortDirection', 'gender'], req.query);
     if (error) {
         throw error;
     }
@@ -45,7 +45,7 @@ exports.listMovieCharacters = async (req, res) => {
     const { sortBy, sortDirection, gender } = req.query;
 
     const sortKey = sortBy || 'name';
-    const sortValue = sortDirection || 'ASC';
+    const sortValue = sortDirection || 'asc';
     let filteredCharacters;
 
     const sortedCharacters = _.orderBy(characters, [sortKey], [sortValue]);
