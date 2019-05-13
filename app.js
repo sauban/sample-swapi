@@ -10,6 +10,8 @@ const error = require('./middlewares/error');
 const app = express();
 const router = promiseRouter();
 
+app.set('trust proxy', true);
+
 app.use(logger('dev'));
 app.use(express.json());
 // parse body params and attach them to req.body

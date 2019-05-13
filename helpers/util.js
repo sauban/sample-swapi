@@ -28,7 +28,7 @@ exports.getClientIP = (req) => {
     const list = ipAddr.split(',');
     ipAddr = list[list.length - 1];
   } else {
-    ipAddr = req.connection.remoteAddress;
+    ipAddr = req.connection.remoteAddress || req.ip;
   }
 };
 
