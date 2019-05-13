@@ -22,6 +22,16 @@ const fetchRecord = async (url, oldRecord = []) => {
   }
 };
 
+exports.getClientIP = (req) => {
+  let ipAddr = req.headers['x-forwarded-for'];
+  if (ipAddr) {
+    const list = ipAddr.split(',');
+    ipAddr = list[list.length - 1];
+  } else {
+    ipAddr = req.connection.remoteAddress;
+  }
+};
+
 exports.transformGender = (gender) => {
   if (!_.includes(['female', 'male', 'unknown'], gender)) {
     gender = 'unknown';
