@@ -3,6 +3,10 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
 const promiseRouter = require('express-promise-router');
+const compress = require('compression');
+const methodOverride = require('method-override');
+const cors = require('cors');
+const helmet = require('helmet');
 
 const registerRoutes = require('./routes/index');
 const error = require('./middlewares/error');
@@ -12,12 +16,26 @@ const router = promiseRouter();
 
 app.set('trust proxy', true);
 
+// gzip compression
+app.use(compress());
+
+// lets you use HTTP verbs such as PUT or DELETE
+// in places where the client doesn't support it
+app.use(methodOverride());
+
+// secure apps by setting various HTTP headers
+app.use(helmet());
+
+// enable CORS - Cross Origin Resource Sharing
+app.use(cors());
+
 app.use(logger('dev'));
 app.use(express.json());
 // parse body params and attach them to req.body
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(router);
+
 
 app.use('/docs', express.static(path.join(__dirname, 'docs')));
 
