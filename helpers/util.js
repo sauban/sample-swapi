@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-globals */
 const { get } = require('axios');
 const httpStatus = require('http-status');
@@ -20,6 +21,15 @@ const fetchRecord = async (url, oldRecord = []) => {
     throw error;
   }
 };
+
+exports.transformGender = (gender) => {
+  if (!_.includes(['female', 'male', 'unknown'], gender)) {
+    gender = 'unknown';
+  }
+  return gender;
+};
+
+exports.getIdFromUrl = url => url.substring(0, url.length - 1).split('/').pop();
 
 exports.fetchRecord = fetchRecord;
 

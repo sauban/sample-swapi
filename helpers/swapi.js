@@ -2,7 +2,10 @@ const { map } = require('bluebird');
 const _ = require('lodash');
 
 const Cache = require('./cache');
-const { fetchRecord, toFeet, convertToNum } = require('./util');
+const {
+  fetchRecord, toFeet, convertToNum, transformGender, getIdFromUrl,
+} = require('./util');
+
 
 const BASE_URL = 'https://swapi.co/api';
 const ttl = 60 * 60 * 2;
@@ -12,14 +15,19 @@ const characterCache = new Cache(ttl);
 const _getMovieList = async (url) => {
   const movies = await fetchRecord(url);
   const records = movies.map(movie => Object.assign({},
-    { id: movie.episode_id, name: movie.title },
-    _.pick(movie, ['opening_crawl', 'release_date'])));
+    { id: getIdFromUrl(movie.url), name: movie.title },
+    _.pick(movie, ['opening_crawl', 'release_date', 'url'])));
   return records;
 };
 
 const _getCharacter = async (url) => {
   const character = await fetchRecord(url);
-  const record = Object.assign(_.pick(character, ['name', 'gender', 'url']), { heightInFeet: toFeet(convertToNum(character.height)), height: convertToNum(character.height) });
+  const record = Object.assign(_.pick(character, ['name', 'url']), {
+    id: getIdFromUrl(character.url),
+    heightInFeet: toFeet(convertToNum(character.height)),
+    height: convertToNum(character.height),
+    gender: transformGender(character.gender),
+  });
   return record;
 };
 
