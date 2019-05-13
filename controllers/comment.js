@@ -1,7 +1,5 @@
 const httpStatus = require('http-status');
 
-const { getClientIP } = require('../helpers/util');
-
 const Comment = require('../models/comment');
 
 exports.listAllMovieComments = async (req, res) => {
@@ -14,7 +12,6 @@ exports.listAllMovieComments = async (req, res) => {
 exports.createMovieComment = async (req, res) => {
   const data = req.body;
   data.commenter_ip = req.headers['x-forwarded-for'] || req.ip;
-  console.log(data);
   data.movie_id = req.movie.id;
   const newComment = new Comment(data);
   const createdCommentId = await Comment.createComment(newComment);

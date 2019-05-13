@@ -30,6 +30,7 @@ exports.getClientIP = (req) => {
   } else {
     ipAddr = req.connection.remoteAddress || req.ip;
   }
+  return ipAddr;
 };
 
 exports.transformGender = (gender) => {
