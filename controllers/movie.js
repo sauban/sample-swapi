@@ -16,7 +16,7 @@ exports.listMovies = async (req, res, next) => {
     movie.comment_counts = _.head(_.at(counts, '[0].count'));
     return movie;
   }).catch(next);
-  res.send(movies);
+  res.json(movies);
 };
 
 exports.loadMovie = async (req, res, next) => {
@@ -34,6 +34,12 @@ exports.loadMovie = async (req, res, next) => {
     }
     return next(error);
   }
+};
+
+exports.getMovieById = async (req, res) => {
+  const { movie } = req;
+  movie.comments = await Comment.getAllComment(movie.id);
+  res.json(movie);
 };
 
 exports.listMovieCharacters = async (req, res) => {

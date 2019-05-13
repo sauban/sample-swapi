@@ -29,6 +29,20 @@ module.exports = (router) => {
   router.get('/movies', movieCtrl.listMovies);
 
   /**
+   * @api {get} /movies/:movieId Get Movie By Id
+   * @apiDescription Get movie by Id
+   * @apiVersion 1.0.0
+   * @apiName GetMovieById
+   * @apiGroup Movie
+   * @apiPermission public
+   *
+   * @apiSuccess {Object} movie Movie object.
+   *
+   * @apiError (BadRequest 400)     BadRequest   Invalid call to endpoint
+   */
+  router.get('/movies/:movieId', movieCtrl.getMovieById);
+
+  /**
    * @api {post} /movies/:movieId/comments Add Comment
    * @apiDescription Add a new comment
    * @apiVersion 1.0.0
