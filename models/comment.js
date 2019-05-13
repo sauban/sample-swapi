@@ -2,7 +2,7 @@
 
 const { Promise } = require('bluebird');
 
-const Sql = require('../helpers/db');
+const SQLDb = require('../helpers/db');
 
 // Comment object constructor
 class Comment {
@@ -15,122 +15,80 @@ class Comment {
 
   static createComment(newComment) {
     return new Promise(async (resolve, reject) => {
-      const sql = new Sql();
+      const sql = new SQLDb();
       try {
-        const conn = await sql.connect();
-        conn.query('SET @@auto_increment_increment = 1');
-        conn.query('INSERT INTO comments SET ?', newComment, (err, res) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(res.insertId);
-          }
-          sql.close();
-        });
+        await sql.query('SET @@auto_increment_increment = 1');
+        const res = await sql.query('INSERT INTO comments SET ?', newComment);
+        resolve(res.insertId);
       } catch (error) {
-        sql.close();
         reject(error);
       }
+      await sql.close();
     });
   }
 
   static getCommentById(commentId) {
     return new Promise(async (resolve, reject) => {
-      const sql = new Sql();
+      const sql = new SQLDb();
       try {
-        const conn = await sql.connect();
-        conn.query('SELECT comment FROM comments WHERE id = ? ', commentId, (err, res) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(res);
-          }
-          sql.close();
-        });
+        const res = sql.query('SELECT comment FROM comments WHERE id = ? ', commentId);
+        resolve(res);
       } catch (error) {
-        sql.close();
         reject(error);
       }
+      await sql.close();
     });
   }
 
   static getAllComment(movie_id) {
     return new Promise(async (resolve, reject) => {
-      const sql = new Sql();
+      const sql = new SQLDb();
       try {
-        const conn = await sql.connect();
-        conn.query('SELECT * FROM comments WHERE movie_id = ? ORDER BY created_at DESC', [movie_id], (err, res) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(res);
-          }
-          sql.close();
-        });
+        const res = await sql.query('SELECT * FROM comments WHERE movie_id = ? ORDER BY created_at DESC', [movie_id]);
+        resolve(res);
       } catch (error) {
-        sql.close();
         reject(error);
       }
+      await sql.close();
     });
   }
 
   static updateById(id, comment) {
     return new Promise(async (resolve, reject) => {
-      const sql = new Sql();
+      const sql = new SQLDb();
       try {
-        const conn = await sql.connect();
-        conn.query('UPDATE comments SET comment = ? WHERE id = ?', [comment.comment, id], (err, res) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(res);
-          }
-          sql.close();
-        });
+        const res = sql.query('UPDATE comments SET comment = ? WHERE id = ?', [comment.comment, id]);
+        resolve(res);
       } catch (error) {
-        sql.close();
         reject(error);
       }
+      await sql.close();
     });
   }
 
   static remove(id) {
     return new Promise(async (resolve, reject) => {
-      const sql = new Sql();
+      const sql = new SQLDb();
       try {
-        const conn = await sql.connect();
-        conn.query('DELETE FROM comments WHERE id = ?', [id], (err, res) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(res);
-          }
-          sql.close();
-        });
+        const res = await sql.query('DELETE FROM comments WHERE id = ?', [id]);
+        resolve(res);
       } catch (error) {
-        sql.close();
         reject(error);
       }
+      await sql.close();
     });
   }
 
   static getMovieCommentCount(movieId) {
     return new Promise(async (resolve, reject) => {
-      const sql = new Sql();
+      const sql = new SQLDb();
       try {
-        const conn = await sql.connect();
-        conn.query('SELECT COUNT(*) as "count" FROM comments WHERE movie_id = ?', [movieId], (err, res) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(res);
-          }
-          sql.close();
-        });
+        const res = await sql.query('SELECT COUNT(*) as "count" FROM comments WHERE movie_id = ?', [movieId]);
+        resolve(res);
       } catch (error) {
-        sql.close();
         reject(error);
       }
+      await sql.close();
     });
   }
 }
