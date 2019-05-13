@@ -14,7 +14,7 @@ const error = require('./middlewares/error');
 const app = express();
 const router = promiseRouter();
 
-app.set('trust proxy', true);
+// app.set('trust proxy', true);
 
 // gzip compression
 app.use(compress());

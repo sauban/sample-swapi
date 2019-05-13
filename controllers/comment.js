@@ -12,7 +12,7 @@ exports.listAllMovieComments = async (req, res) => {
 
 exports.createMovieComment = async (req, res) => {
   const data = req.body;
-  data.commenter = getClientIP(req);
+  data.commenter_ip = getClientIP(req);
   data.movie_id = req.movie.id;
   const newComment = new Comment(data);
   const createdCommentId = await Comment.createComment(newComment);
