@@ -36,7 +36,7 @@ module.exports = (router) => {
    * @apiGroup Comment
    * @apiPermission public
    *
-   * @apiParam  {String}             movie_id     Comment's movie_id
+   * @apiParam  {String}             movieId     Comment's movie id
    * @apiParam  {String{6..500}}     comment  Comment's comment
    *
    * @apiError (Bad Request 400)   ValidationError  Some parameters may contain invalid values
@@ -51,7 +51,7 @@ module.exports = (router) => {
    * @apiGroup Comment
    * @apiPermission public
    *
-   * @apiSuccess {Object[]} movies List of movie comments.
+   * @apiSuccess {Object[]} movies List of movie comments in reverse chronological order.
    *
    * @apiError (BadRequest 400)     BadRequest   Invalid call to endpoint
    */
@@ -62,10 +62,10 @@ module.exports = (router) => {
    * @apiDescription Get a list of movie characters
    * @apiVersion 1.0.0
    * @apiName ListMoviesCharacters
-   * @apiGroup Comment
+   * @apiGroup Character
    * @apiPermission public
    *
-   * @apiParam  {String{asc|desc}}   [sortBy=name|gender|height]     Sortby properties
+   * @apiParam  {String{1..10}}   [sortBy=name|gender|height]     Sortby properties
    * @apiParam  {String{1..10}}      [sortDirection=asc|desc]  Sort direction
    * @apiParam  {String{1..10}}      [gender=female|male|unknown]  Filter by gender
    *
