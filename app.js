@@ -4,7 +4,6 @@ const bodyParser = require('body-parser');
 const logger = require('morgan');
 const promiseRouter = require('express-promise-router');
 const compress = require('compression');
-const methodOverride = require('method-override');
 const cors = require('cors');
 const helmet = require('helmet');
 
@@ -16,10 +15,6 @@ const router = promiseRouter();
 
 // gzip compression
 app.use(compress());
-
-// lets you use HTTP verbs such as PUT or DELETE
-// in places where the client doesn't support it
-app.use(methodOverride());
 
 // secure apps by setting various HTTP headers
 app.use(helmet());
