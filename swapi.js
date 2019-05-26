@@ -1,9 +1,9 @@
 const _ = require('lodash');
 
-const cacheFn = require('./cache');
+const cacheFn = require('./helpers/cache');
 const {
   fetchRecord, convertToNum, getIdFromUrl,
-} = require('./util');
+} = require('./helpers/util');
 
 const BASE_URL = 'https://swapi.co/api';
 const ttl = 60 * 60 * 2;
