@@ -23,7 +23,7 @@ const _getMovieList = async (url) => {
 
 const _getCharacter = async (url) => {
   const character = await fetchRecord(url);
-  const record = Object.assign(_.pick(character, ['name', 'url', 'gender']), {
+  const record = Object.assign(_.pick(character, ['name', 'gender']), {
     id: getIdFromUrl(character.url),
     height: convertToNum(character.height),
   });
