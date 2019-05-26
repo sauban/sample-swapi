@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "A sample starwars api",
   "scripts": {
-    "start": "node ./bin/www",
+    "start": "node server.js",
     "docs": "apidoc -i routes -o docs",
     "postinstall": "npm run docs"
   },

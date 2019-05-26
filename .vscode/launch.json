@@ -4,7 +4,7 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceFolder}/bin/www",
+            "program": "${workspaceFolder}/server.js",
             "env": {
                 "DEBUG": "sample-swapi:*"
             }
