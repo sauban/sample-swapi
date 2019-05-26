@@ -7,8 +7,8 @@ const compress = require('compression');
 const cors = require('cors');
 const helmet = require('helmet');
 
-const registerRoutes = require('./routes/index');
-const error = require('./middlewares/error');
+const registerRoutes = require('../routes/index');
+const error = require('../middlewares/error');
 
 const app = express();
 const router = promiseRouter();

@@ -8,7 +8,7 @@
 
 const debug = require('debug')('sample-swapi:server');
 const http = require('http');
-const app = require('./app');
+const app = require('./config/express');
 const { port } = require('./config/config');
 
 /**
