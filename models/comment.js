@@ -4,7 +4,7 @@ const { Promise } = require('bluebird');
 
 const sql = require('../config/db');
 
-const CommentMovie = {
+const CommentModel = {
   createComment(newComment) {
     return new Promise(async (resolve, reject) => {
       try {
@@ -40,4 +40,4 @@ const CommentMovie = {
   },
 };
 
-module.exports = CommentMovie;
+module.exports = CommentModel;
