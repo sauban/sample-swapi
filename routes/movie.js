@@ -23,7 +23,6 @@ module.exports = (router) => {
    */
   router.get('/movies', movieCtrl.listMovies);
 
-
   router
     .param('movieId', validate(checkMovieParam))
     .param('movieId', movieCtrl.loadMovie)

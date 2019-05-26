@@ -12,7 +12,7 @@ const characterCache = cacheFn(ttl);
 
 const serializeMovieObject = movie => Object.assign({},
   { id: getIdFromUrl(movie.url), name: movie.title },
-  _.pick(movie, ['opening_crawl', 'release_date', 'characters']));
+  _.pick(movie, ['opening_crawl', 'release_date', 'characters', 'url']));
 
 const _getMovieList = async (url) => {
   const movies = await fetchRecord(url);
