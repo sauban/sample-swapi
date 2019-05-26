@@ -1,7 +1,6 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-globals */
 const { get } = require('axios');
-const _ = require('lodash');
 
 const fetchRecord = async (url, oldRecord = []) => {
   try {
@@ -30,19 +29,3 @@ const convertToNum = (str) => {
   return Number(str);
 };
 exports.convertToNum = convertToNum;
-
-exports.validateQUery = (allowedKeys, queryObj) => Object.keys(queryObj).reduce((acc, curr) => {
-  if (!_.includes(allowedKeys, curr)) {
-    return {
-      status: 400,
-      message: 'Validation Error',
-      errors: [
-        {
-          location: 'query',
-          message: `Invalid '${curr}' query key, it must be one of [${allowedKeys}]`,
-        },
-      ],
-    };
-  }
-  return acc;
-}, null);

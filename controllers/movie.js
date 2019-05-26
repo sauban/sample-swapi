@@ -1,4 +1,3 @@
-const { validateQUery } = require('../helpers/util');
 const movieService = require('../services/movie');
 const characterService = require('../services/character');
 
@@ -20,14 +19,10 @@ exports.loadMovie = async (req, res, next) => {
 exports.getMovieById = async (req, res) => {
   const { movie } = req;
   const record = await movieService.getByMovieWithComments(movie);
-  res.json(record);
+  return res.json(record);
 };
 
 exports.listMovieCharacters = async (req, res) => {
-  const error = validateQUery(['sortBy', 'sortDirection', 'gender'], req.query);
-  if (error) {
-    throw error;
-  }
   const { movie } = req;
   const { sortBy, sortDirection, gender } = req.query;
   const characters = await characterService.getMovieCharacters({

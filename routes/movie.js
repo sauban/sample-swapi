@@ -6,6 +6,8 @@ const { getMovieComments, getMovieCharacters, checkMovieParam } = require('../va
 const movieCtrl = require('../controllers/movie');
 const commentCtrl = require('../controllers/comment');
 
+const queryValidator = require('../middlewares/requestValidator');
+
 module.exports = (router) => {
   /**
    * @api {get} /movies List Movies
@@ -83,5 +85,5 @@ module.exports = (router) => {
      *
      * @apiError (BadRequest 400)     BadRequest   Invalid call to endpoint
      */
-    .get('/movies/:movieId/characters', validate(getMovieCharacters), movieCtrl.listMovieCharacters);
+    .get('/movies/:movieId/characters', validate(getMovieCharacters), queryValidator(['sortBy', 'sortDirection', 'gender']), movieCtrl.listMovieCharacters);
 };
