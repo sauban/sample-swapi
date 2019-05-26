@@ -1,10 +1,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-globals */
 const { get } = require('axios');
-const httpStatus = require('http-status');
 const _ = require('lodash');
-
-const APIError = require('./apierror');
 
 const fetchRecord = async (url, oldRecord = []) => {
   try {
@@ -21,40 +18,9 @@ const fetchRecord = async (url, oldRecord = []) => {
     throw error;
   }
 };
-
-exports.getClientIP = (req) => {
-  let ipAddr = req.headers['x-forwarded-for'];
-  if (ipAddr) {
-    const list = ipAddr.split(',');
-    ipAddr = list[list.length - 1];
-  } else {
-    ipAddr = req.connection.remoteAddress || req.ip;
-  }
-  return ipAddr;
-};
-
-exports.transformGender = (gender) => {
-  if (!_.includes(['female', 'male', 'unknown'], gender)) {
-    gender = 'unknown';
-  }
-  return gender;
-};
-
 exports.getIdFromUrl = url => url.substring(0, url.length - 1).split('/').pop();
 
 exports.fetchRecord = fetchRecord;
-
-const toFeet = (num) => {
-  if (isNaN(num)) {
-    return null;
-  }
-  const realFeet = +num / 30.48;
-  const feet = Math.floor(realFeet);
-  const inches = Math.round((realFeet - feet) * 12);
-  return `${feet}ft and ${inches} inches`;
-};
-
-exports.toFeet = toFeet;
 
 const convertToNum = (str) => {
   if (isNaN(str)) {
@@ -65,19 +31,10 @@ const convertToNum = (str) => {
 };
 exports.convertToNum = convertToNum;
 
-exports.getMeta = results => ({
-  total: results.length,
-  totalHeight: results.reduce((acc, curr) => {
-    acc.cm += convertToNum(curr.height);
-    acc.inch = toFeet(acc.cm);
-    return acc;
-  }, { cm: 0 }),
-});
-
 exports.validateQUery = (allowedKeys, queryObj) => Object.keys(queryObj).reduce((acc, curr) => {
   if (!_.includes(allowedKeys, curr)) {
-    return new APIError({
-      status: httpStatus.BAD_REQUEST,
+    return {
+      status: 400,
       message: 'Validation Error',
       errors: [
         {
@@ -85,7 +42,7 @@ exports.validateQUery = (allowedKeys, queryObj) => Object.keys(queryObj).reduce(
           message: `Invalid '${curr}' query key, it must be one of [${allowedKeys}]`,
         },
       ],
-    });
+    };
   }
   return acc;
 }, null);

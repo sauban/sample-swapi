@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 const moment = require('moment');
 const bluebird = require('bluebird');
 const _ = require('lodash');
@@ -7,7 +8,6 @@ const { getMovieList, getMovieById } = require('../helpers/swapi');
 
 const getMovieCommentsCount = async (movie) => {
   const counts = await Comment.getMovieCommentCount(movie.id);
-  // eslint-disable-next-line no-param-reassign
   movie.comment_counts = _.head(_.at(counts, '[0].count'));
   return movie;
 };
@@ -31,9 +31,9 @@ exports.getMovie = async (movieId) => {
   }
 };
 
-exports.getByMovieWithComments = async (movie) => {
-  const comments = await Comment.getMovieComments(movie.id);
-  const record = Object.assign({}, omitCharacterAndUrls(movie), { comments });
+exports.getByMovieWithComments = async (movieObj) => {
+  const comments = await Comment.getMovieComments(movieObj.id);
+  const record = Object.assign({}, omitCharacterAndUrls(movieObj), { comments });
   return record;
 };
 

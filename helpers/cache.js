@@ -2,30 +2,31 @@
 const NodeCache = require('node-cache');
 const { Promise } = require('bluebird');
 
-class Cache {
-  constructor(ttlSeconds) {
-    this.cache = new NodeCache({ stdTTL: ttlSeconds, checkperiod: ttlSeconds * 0.2, useClones: false });
-  }
+function cacheFactory(ttlSeconds) {
+  const cache = new NodeCache({ stdTTL: ttlSeconds, checkperiod: ttlSeconds * 0.2, useClones: false });
 
-  get(key, storeFunction) {
-    const value = this.cache.get(key);
-    if (value) {
-      return Promise.resolve(value);
-    }
+  return {
+    get(key, storeFunction) {
+      const value = cache.get(key);
+      if (value) {
+        return Promise.resolve(value);
+      }
 
-    return storeFunction().then((result) => {
-      this.cache.set(key, result);
-      return result;
-    });
-  }
+      return storeFunction().then((result) => {
+        this.set(key, result);
+        return result;
+      });
+    },
 
-  del(keys) {
-    this.cache.del(keys);
-  }
+    set(key, value) {
+      cache.set(key, value);
+      return value;
+    },
 
-  flush() {
-    this.cache.flushAll();
-  }
+    del(keys) {
+      cache.del(keys);
+    },
+  };
 }
 
-module.exports = Cache;
+module.exports = cacheFactory;

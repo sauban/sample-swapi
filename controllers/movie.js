@@ -1,7 +1,6 @@
-const _ = require('lodash');
-
-const { getMeta, validateQUery } = require('../helpers/util');
+const { validateQUery } = require('../helpers/util');
 const movieService = require('../services/movie');
+const characterService = require('../services/character');
 
 exports.listMovies = async (req, res) => {
   const movies = await movieService.getMoviesWithCommentsCount();
@@ -30,20 +29,12 @@ exports.listMovieCharacters = async (req, res) => {
     throw error;
   }
   const { movie } = req;
-  const { characters } = movie;
   const { sortBy, sortDirection, gender } = req.query;
-
-  const sortKey = sortBy || 'name';
-  const sortValue = sortDirection || 'asc';
-  let filteredCharacters;
-
-  const sortedCharacters = _.orderBy(characters, [sortKey], [sortValue]);
-
-  if (gender) {
-    filteredCharacters = _.filter(sortedCharacters, character => character.gender === gender);
-  }
-
-  const results = filteredCharacters || sortedCharacters;
-  const meta = getMeta(results);
-  return res.json({ results, meta });
+  const characters = await characterService.getMovieCharacters({
+    characterUrls: movie.characters,
+    sortBy,
+    sortDirection,
+    gender,
+  });
+  return res.json(characters);
 };
