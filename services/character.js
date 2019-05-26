@@ -3,7 +3,7 @@
 const bluebird = require('bluebird');
 const _ = require('lodash');
 
-const { getCharacterByUrl } = require('../swapi');
+const { getCharacterByUrl } = require('../helpers/swapi');
 
 const transformGender = (character) => {
   if (!_.includes(['female', 'male', 'unknown'], character.gender)) {

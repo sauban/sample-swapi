@@ -4,7 +4,7 @@ const bluebird = require('bluebird');
 const _ = require('lodash');
 
 const Comment = require('../models/comment');
-const { getMovieList, getMovieById } = require('../swapi');
+const { getMovieList, getMovieById } = require('../helpers/swapi');
 
 const getMovieCommentsCount = async (movie) => {
   const counts = await Comment.getMovieCommentCount(movie.id);
