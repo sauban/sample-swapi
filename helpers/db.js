@@ -1,58 +1,51 @@
-require('dotenv').config();
-
 const mysql = require('mysql');
 
 const { databaseUrl } = require('./config');
 // local mysql db connection
 
-class MysqlConnect {
-  constructor() {
-    this.connection = mysql.createConnection(databaseUrl);
-    this.connected = false;
-  }
+function makeDbConnection() {
+  const connection = mysql.createConnection(databaseUrl);
+  let connected = false;
 
-  connect() {
-    return new Promise((resolve, reject) => {
-      this.connection.connect((err) => {
-        if (err) return reject(err);
-        this.connected = true;
-        return resolve(this.connection);
-      });
+  const connect = () => new Promise((resolve, reject) => {
+    connection.connect((err) => {
+      if (err) return reject(err);
+      connected = true;
+      return resolve(connection);
     });
-  }
+  });
 
-  query(qryString, qryParams = []) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        if (!this.connected) {
-          await this.connect();
-        }
-        this.connection.query(qryString, qryParams, async (err, res) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(res);
+  return {
+    query(qryString, qryParams = []) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          if (!connected) {
+            await connect();
           }
-        });
-      } catch (error) {
-        reject(error);
-      }
-    });
-  }
+          connection.query(qryString, qryParams, async (err, res) => {
+            if (err) return reject(err);
+            return resolve(res);
+          });
+        } catch (error) {
+          reject(error);
+        }
+      });
+    },
 
-  close() {
-    return new Promise((resolve, reject) => {
-      if (this.connected) {
-        this.connection.end((err) => {
-          if (err) return reject(err);
-          this.connected = false;
-          return resolve(null);
-        });
-      } else {
-        resolve(null);
-      }
-    });
-  }
+    close() {
+      return new Promise((resolve, reject) => {
+        if (connected) {
+          connection.end((err) => {
+            if (err) return reject(err);
+            connected = false;
+            return resolve(null);
+          });
+        } else {
+          resolve(null);
+        }
+      });
+    },
+  };
 }
 
-module.exports = MysqlConnect;
+module.exports = makeDbConnection;
