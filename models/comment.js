@@ -2,7 +2,7 @@
 
 const { Promise } = require('bluebird');
 
-const sql = require('../helpers/db');
+const sql = require('../config/db');
 
 const CommentMovie = {
   createComment(newComment) {

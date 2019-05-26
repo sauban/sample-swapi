@@ -1,6 +1,4 @@
-const httpStatus = require('http-status');
-
-const Comment = require('../models/comment');
+const movieService = require('../services/movie');
 
 const buildComment = req => ({
   ...req.body,
@@ -12,12 +10,12 @@ const buildComment = req => ({
 
 exports.createMovieComment = async (req, res) => {
   const newComment = buildComment(req);
-  const createdComment = await Comment.createComment(newComment);
-  return res.status(httpStatus.CREATED).json(createdComment);
+  const createdComment = await movieService.createMovieComment(newComment);
+  return res.status(201).json(createdComment);
 };
 
 exports.listAllMovieComments = async (req, res) => {
-  const { movieId } = req.params;
-  const comments = await Comment.getMovieComments(movieId);
+  const { movie } = req;
+  const { comments } = await movieService.getByMovieWithComments(movie);
   return res.json(comments);
 };

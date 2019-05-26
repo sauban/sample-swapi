@@ -1,45 +1,27 @@
-const moment = require('moment');
-const bluebird = require('bluebird');
-const httpStatus = require('http-status');
 const _ = require('lodash');
 
-const Comment = require('../models/comment');
-const { getMovieList, getMovieById } = require('../helpers/swapi');
 const { getMeta, validateQUery } = require('../helpers/util');
+const movieService = require('../services/movie');
 
-exports.listMovies = async (req, res, next) => {
-  const fetchedMovies = await getMovieList();
-  const sortMovies = _.sortBy(fetchedMovies, movie => moment(movie.release_date));
-  const movies = await bluebird.map(sortMovies, async (movie) => {
-    const counts = await Comment.getMovieCommentCount(movie.id);
-    // eslint-disable-next-line no-param-reassign
-    movie.comment_counts = _.head(_.at(counts, '[0].count'));
-    return movie;
-  }).catch(next);
+exports.listMovies = async (req, res) => {
+  const movies = await movieService.getMoviesWithCommentsCount();
   res.json(movies);
 };
 
 exports.loadMovie = async (req, res, next) => {
-  try {
-    const { movieId } = req.params;
-    const movie = await getMovieById(movieId);
-    if (!movie) {
-      return next({ message: 'Movie not found', status: httpStatus.NOT_FOUND });
-    }
-    req.movie = movie;
-    return next();
-  } catch (error) {
-    if (error.response && error.message) {
-      error.message = 'Movie not found';
-    }
-    return next(error);
+  const { movieId } = req.params;
+  const movie = await movieService.getMovie(movieId);
+  if (!movie) {
+    return next({ message: 'Movie not found', status: 404 });
   }
+  req.movie = movie;
+  return next();
 };
 
 exports.getMovieById = async (req, res) => {
   const { movie } = req;
-  movie.comments = await Comment.getAllComment(movie.id);
-  res.json(movie);
+  const record = await movieService.getByMovieWithComments(movie);
+  res.json(record);
 };
 
 exports.listMovieCharacters = async (req, res) => {
