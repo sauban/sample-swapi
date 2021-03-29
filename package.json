@@ -2,6 +2,7 @@
   "name": "sample-swapi",
   "version": "0.0.0",
   "description": "A sample starwars api",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "docs": "apidoc -i routes -o docs",
